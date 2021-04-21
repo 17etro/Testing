@@ -3,10 +3,12 @@ const { scrypt } = require("crypto");
 // hashData = {
 //     password: '',
 //     salt: '',
+//     keylen: '',
 // };
 
 const passwordIsMissing = "password is missing...";
 const saltIsIncorrect = "salt is incorrect...";
+const defaultKeyLen = 64;
 
 const hashFunction = (hashData) => {
   return new Promise((resolve, reject) => {
@@ -19,7 +21,9 @@ const hashFunction = (hashData) => {
 
     const { salt, password } = hashData;
 
-    scrypt(password, salt, 64, (err, readyKey) => {
+    const keylen = hashData.keylen ? hashData.keylen : defaultKeyLen;
+
+    scrypt(password, salt, keylen, (err, readyKey) => {
       if (err) reject(err);
       resolve(readyKey.toString("hex"));
     });

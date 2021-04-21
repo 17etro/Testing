@@ -54,6 +54,38 @@ test("Checking errors if missing password ( expect error )", () => {
     });
 });
 
+//testing keylen
+test("Checking if keylen length matching variable", () => {
+  const hashData = {
+    password: pass_string,
+    salt: salt_string,
+    keylen: 27,
+  };
+
+  return hashFunction(hashData).then((res) => {
+    expect(res.length).toBe(27 * 2);
+  });
+});
+
+test("Checking if keylen 64 equal to default keylen", async () => {
+  const hashData1 = {
+    password: pass_string,
+    salt: salt_string,
+    keylen: 64,
+  };
+
+  const hashData2 = {
+    password: pass_string,
+    salt: salt_string,
+  };
+  try {
+    const firstHash = await hashFunction(hashData1);
+    const secondHash = await hashFunction(hashData2);
+
+    expect(firstHash).toEqual(secondHash);
+  } catch (_) {}
+});
+
 // testing empty strings
 test("Checking errors if missing salt ( expect error )", () => {
   const hashData = {
