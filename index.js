@@ -19,7 +19,7 @@ const hashFunction = (hashData) => {
 
     const { salt, password } = hashData;
 
-    scrypt(password, salt, 64, options, (err, readyKey) => {
+    scrypt(password, salt, 64, (err, readyKey) => {
       if (err) reject(err);
       resolve(readyKey.toString("hex"));
     });
