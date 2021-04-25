@@ -1,4 +1,4 @@
-const { hashFunction, constants } = require("../index");
+const { hashFunction } = require("../index");
 
 // Заготовки разных солей и паролев для тестирования
 
@@ -29,42 +29,42 @@ const salt_emoji2 = "👋🤚🖐";
 const salt_another_lang2 = "他遇到困难从不二乎";
 
 // Тестируем на отсутствие соли / пароля функцию
-test("Checking empty string ( expects error )", () => {
+test("Checking empty string ( expects error )", async () => {
   const hashData = {
     password: "1",
     salt: "",
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err.message).toEqual(constants.saltIsIncorrect);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(err).not.toBe(undefined);
+  }
 });
-test("Checking errors if missing password ( expect error )", () => {
+
+test("Checking errors if missing password ( expect error )", async () => {
   const hashData = {
     password: "",
     salt: "1",
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err.message).toEqual(constants.passwordIsMissing);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(err).not.toBe(undefined);
+  }
 });
 
 //testing keylen
-test("Checking if keylen length matching variable", () => {
+test("Checking if keylen length matching variable", async () => {
   const hashData = {
     password: pass_string,
     salt: salt_string,
     keylen: 27,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(res.length).toBe(27 * 2);
-  });
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 test("Checking if keylen 64 equal to default keylen", async () => {
@@ -78,168 +78,158 @@ test("Checking if keylen 64 equal to default keylen", async () => {
     password: pass_string,
     salt: salt_string,
   };
-  try {
-    const firstHash = await hashFunction(hashData1);
-    const secondHash = await hashFunction(hashData2);
 
-    expect(firstHash).toEqual(secondHash);
-  } catch (_) {}
+  const firstHash = await hashFunction(hashData1);
+  const secondHash = await hashFunction(hashData2);
+  expect(firstHash.toString("hex")).toEqual(secondHash.toString("hex"));
 });
 
 // testing empty strings
-test("Checking errors if missing salt ( expect error )", () => {
+test("Checking errors if missing salt ( expect error )", async () => {
   const hashData = {
     password: "",
     salt: "",
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err.message).toEqual(constants.passwordIsMissing);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(err).not.toBe(undefined);
+  }
 });
 
 // testing default en-US strings
-test("Checking default strings", () => {
+test("Checking default strings", async () => {
   const hashData = {
     password: pass_string,
     salt: salt_string,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(typeof res).toBe("string");
-  });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(err).not.toBe(undefined);
+  }
 });
 
 // testing numbers ( must throw error )
-test("Checking numbers ( expect error )", () => {
+test("Checking numbers ( expect error )", async () => {
   const hashData = {
     password: pass_num,
     salt: salt_num,
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err).not.toBe(undefined);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(error).not.toBe(undefined);
+  }
 });
 
 // tesing cyrillic languages in password and salt
-test("Checking cyrillic languages", () => {
+test("Checking cyrillic languages", async () => {
   const hashData = {
     password: pass_cyr,
     salt: salt_cyr,
   };
 
-  return hashFunction(hashData)
-    .then((res) => {
-      expect(typeof res).toBe("string");
-    })
-    .catch();
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 // testing spec symbols
-test("Checking special symbols", () => {
+test("Checking special symbols", async () => {
   const hashData = {
     password: pass_spec_symbols,
     salt: salt_spec_symbols,
   };
 
-  return hashFunction(hashData)
-    .then((res) => {
-      expect(typeof res).toBe("string");
-    })
-    .catch();
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 // tesing regular expressions
-test("Checking regular expressions ( expect error )", () => {
+test("Checking regular expressions ( expect error )", async () => {
   const hashData = {
     password: pass_reg_exp,
     salt: salt_reg_exp,
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err).not.toBe(undefined);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(error).not.toBe(undefined);
+  }
 });
 
 // tesing obj parameters
-test("Checking object parameters ( expect error )", () => {
+test("Checking object parameters ( expect error )", async () => {
   const hashData = {
     password: pass_obj,
     salt: salt_obj,
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err).not.toBe(undefined);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(error).not.toBe(undefined);
+  }
 });
 
 // tesing array parameters
-test("Checking array parameters ( expect error )", () => {
+test("Checking array parameters ( expect error )", async () => {
   const hashData = {
     password: pass_arr,
     salt: salt_arr,
   };
 
-  return hashFunction(hashData)
-    .then()
-    .catch((err) => {
-      expect(err).not.toBe(undefined);
-    });
+  try {
+    await hashFunction(hashData);
+  } catch (error) {
+    expect(error).not.toBe(undefined);
+  }
 });
 
 // tesing emoji part 1
-test("Checking emoji (1)", () => {
+test("Checking emoji (1)", async () => {
   const hashData = {
     password: pass_emoji,
     salt: salt_emoji,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(typeof res).toBe("string");
-  });
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 // tesing another languages part 1
-test("Checking another languages (1)", () => {
+test("Checking another languages (1)", async () => {
   const hashData = {
     password: pass_another_lang,
     salt: salt_another_lang,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(typeof res).toBe("string");
-  });
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 // tesing emoji part 2
-test("Checking emoji (2)", () => {
+test("Checking emoji (2)", async () => {
   const hashData = {
     password: pass_emoji2,
     salt: salt_emoji2,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(typeof res).toBe("string");
-  });
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
 
 // tesing another languages part 2
-test("Checking another languages (2)", () => {
+test("Checking another languages (2)", async () => {
   const hashData = {
     password: pass_another_lang2,
     salt: salt_another_lang2,
   };
 
-  return hashFunction(hashData).then((res) => {
-    expect(typeof res).toBe("string");
-  });
+  const result = await hashFunction(hashData);
+  expect(typeof result.toString("hex")).toBe("string");
 });
